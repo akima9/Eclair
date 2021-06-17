@@ -24,7 +24,6 @@ class RequestContext
 
         if (count($urlParts) === count($urlPatternParts)) {
             $urlParams = [];
-
             foreach ($urlPatternParts as $key => $part) {
                 if (preg_match('/^\{.*\}$/', $part)) {
                     $urlParams[$key] = $part;
@@ -34,7 +33,17 @@ class RequestContext
                     }//end if
                 }//end if
             }//end foreach
-            return (count($urlParams) < 1) ? [] : array_map(fn ($k) => $urlParts[$k], array_key($urlParams));
+            return (count($urlParams) < 1) ? [] : array_map(function($k){ var_dump($k); var_dump($urlParts); return $urlParts[$k]; }, array_keys($urlParams));
         }//end if
+    }
+
+    public function runMiddlewares()
+    {
+        foreach($this->middlewares as $middlewares){
+            if (! $middleware::process()) {
+                return false;
+            }
+        }
+        return true;
     }
 }
